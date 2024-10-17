@@ -1,0 +1,17 @@
+{
+  "name": "fb-bot",
+  "version": "1.0.0",
+  "description": "Sebuah bot Facebook bernama zer yang di buat oleh edinst",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Edinst",
+  "license": "MIT",
+  "dependencies": {
+    "facebook-chat-api": "^1.7.0",
+    "axios": "^1.5.0",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
