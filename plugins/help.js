@@ -6,7 +6,7 @@ module.exports = {
         name: "help",
         alias: ["commands"],
         version: "1.1.0",
-        author: "Your Name",
+        author: "Edinst",
         cooldown: 5,
         role: 0,
         description: "Menampilkan daftar perintah atau informasi perintah tertentu.",
