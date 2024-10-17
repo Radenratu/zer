@@ -7,7 +7,7 @@ module.exports = {
         name: "cmd",
         alias: [],
         version: "1.1.0",
-        author: "Your Name",
+        author: "Edinst",
         cooldown: 10,
         role: 2, // Hanya admin
         description: "Mengelola perintah bot (install, load, unload, delete).",
