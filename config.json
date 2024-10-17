@@ -1,0 +1,8 @@
+{
+    "prefix": "/",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+    "adminID": ["100078690213463"],
+    "modID": [""],
+    "unloadedCmds": [],
+    "autorestart": 0 // Autorestart bot setiap 60 detik. Atur 0/null untuk mematikan.
+}
