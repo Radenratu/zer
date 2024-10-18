@@ -4,7 +4,11 @@ const path = require('path');
 const { addUser, addThread } = require('./data/AddData');
 
 // Baca appstate dan config dari file
-const appState = JSON.parse(fs.readFileSync('appstate.json', 'utf8'));
+const appStatePath = path.join(__dirname, 'appstate.json');
+let appState = {};
+if (fs.existsSync(appStatePath)) {
+    appState = JSON.parse(fs.readFileSync(appStatePath, 'utf8'));
+}
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 const prefix = config.prefix;
@@ -24,16 +28,29 @@ function loadCommand(commandName) {
 }
 
 // Login menggunakan cookies dan user agent
-login({ appState: appState, userAgent: userAgent }, (err, api) => {
-    if (err) return console.error(err);
+login({ appState: appState, logLevel: "silent" }, (err, api) => {
+    if (err) return console.error("Login Error:", err);
 
-    // Simpan appState setelah login agar session tidak kadaluarsa
-    fs.writeFileSync('appstate.json', JSON.stringify(api.getAppState(), null, 2));
+    // Menyimpan appState baru setelah login
+    fs.writeFileSync(appStatePath, JSON.stringify(api.getAppState(), null, 2));
+
+    // Set options untuk mendengarkan pesan menggunakan MQTT
+    api.setOptions({
+        listenEvents: true,
+        online: true,
+        selfListen: false,
+        updatePresence: false,
+        mqttClient: true // Menggunakan MQTT untuk mendengarkan
+    });
 
     // Mulai mendengarkan pesan
-    api.listen(async (err, message) => {
-        if (err) return console.error(err);
+    api.listenMqtt((err, message) => {
+        if (err) return console.error("Listen Error:", err);
 
+        const { body, threadID, senderID } = message;
+
+        // Mengabaikan pesan yang tidak ada isi
+        if (!body) return;
         const senderID = message.senderID;
         const threadID = message.threadID;
         const body = message.body;
@@ -57,7 +74,7 @@ login({ appState: appState, userAgent: userAgent }, (err, api) => {
         // Muat command dari folder plugins
         const command = loadCommand(commandName);
         if (command) {
-                      const { cooldown, role } = command.config;
+            const { cooldown, role } = command.config;
 
             // Periksa apakah pengguna memiliki izin untuk menjalankan command ini
             if (role > 0 && !message.isAdmin && !(role === 1 && message.isModerator)) {
@@ -81,4 +98,3 @@ login({ appState: appState, userAgent: userAgent }, (err, api) => {
         }
     });
 });
-      
